@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -771,40 +772,6 @@
         let isLoggedIn = false;
         let isAdminLoggedIn = false;
 
-        // ===== إرسال رسالة لبوت تلجرام =====
-        function sendToTelegram() {
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-            const subject = document.getElementById('userSubject').value;
-            const message = document.getElementById('userMessage').value;
-
-            const botToken = '8987189770:AAHzbmfE2_iEsceMe4kKE7fAwQ_1ugVi54o';
-            const chatId = '6896130412';
-
-            const text = `📩 **رسالة جديدة من الموقع**\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n📌 الموضوع: ${subject}\n💬 الرسالة: ${message}`;
-
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        alert('✅ تم إرسال رسالتك بنجاح!');
-                        document.getElementById('userName').value = '';
-                        document.getElementById('userEmail').value = '';
-                        document.getElementById('userSubject').value = '';
-                        document.getElementById('userMessage').value = '';
-                    } else {
-                        alert('❌ حدث خطأ، حاول مرة أخرى.');
-                        console.log(data);
-                    }
-                })
-                .catch(error => {
-                    alert('❌ حدث خطأ في الاتصال.');
-                    console.log(error);
-                });
-        }
-
         // ===== دالة تسجيل الدخول =====
         function login() {
             const username = document.getElementById('username').value.trim();
@@ -1173,6 +1140,191 @@
             }
         }
 
+        // ===== إرسال رسالة لبوت تلجرام =====
+        function sendToTelegram() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const subject = document.getElementById('userSubject').value;
+            const message = document.getElementById('userMessage').value;
+
+            const botToken = '8987189770:AAHzbmfE2_iEsceMe4kKE7fAwQ_1ugVi54o';
+            const chatId = '6896130412';
+
+            const text = `📩 **رسالة جديدة من الموقع**\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n📌 الموضوع: ${subject}\n💬 الرسالة: ${message}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert('✅ تم إرسال رسالتك بنجاح!');
+                        document.getElementById('userName').value = '';
+                        document.getElementById('userEmail').value = '';
+                        document.getElementById('userSubject').value = '';
+                        document.getElementById('userMessage').value = '';
+                    } else {
+                        alert('❌ حدث خطأ، حاول مرة أخرى.');
+                        console.log(data);
+                    }
+                })
+                .catch(error => {
+                    alert('❌ حدث خطأ في الاتصال.');
+                    console.log(error);
+                });
+        }
+
+        // ===== استقبال أوامر البوت =====
+        function handleTelegramCommand(update) {
+            const message = update.message;
+            if (!message || !message.text) return;
+
+            const chatId = message.chat.id;
+            const text = message.text.trim();
+            const command = text.split(' ')[0];
+
+            if (chatId.toString() !== '6896130412') {
+                sendTelegramMessage(chatId, '⚠️ أنت غير مصرح لك باستخدام هذا البوت.');
+                return;
+            }
+
+            if (command === '/addicon') {
+                const parts = text.split(' ');
+                if (parts.length < 4) {
+                    sendTelegramMessage(chatId, '❌ الاستخدام: /addicon 🕌 أذكار الصباح https://example.com');
+                    return;
+                }
+                const icon = parts[1];
+                const label = parts.slice(2, -1).join(' ');
+                const link = parts[parts.length - 1];
+                addIconFromTelegram(chatId, icon, label, link);
+            } else if (command === '/adddeceased') {
+                const name = text.replace('/adddeceased', '').trim();
+                if (!name) {
+                    sendTelegramMessage(chatId, '❌ الاستخدام: /adddeceased اسم الميت');
+                    return;
+                }
+                addDeceasedFromTelegram(chatId, name);
+            } else if (command === '/deleteicon') {
+                const index = parseInt(text.replace('/deleteicon', '').trim());
+                if (isNaN(index)) {
+                    sendTelegramMessage(chatId, '❌ الاستخدام: /deleteicon رقم الأيقونة');
+                    return;
+                }
+                deleteIconFromTelegram(chatId, index);
+            } else if (command === '/deletedeceased') {
+                const index = parseInt(text.replace('/deletedeceased', '').trim());
+                if (isNaN(index)) {
+                    sendTelegramMessage(chatId, '❌ الاستخدام: /deletedeceased رقم الميت');
+                    return;
+                }
+                deleteDeceasedFromTelegram(chatId, index);
+            } else if (command === '/hide' || command === '/show') {
+                const section = text.replace(command, '').trim();
+                if (!section) {
+                    sendTelegramMessage(chatId, `❌ الاستخدام: ${command} home/about/deceased/icons/contact`);
+                    return;
+                }
+                toggleSectionFromTelegram(chatId, section, command === '/show');
+            } else if (command === '/status') {
+                showStatus(chatId);
+            } else {
+                sendTelegramMessage(chatId, '🤖 مرحباً! استخدم /status لمعرفة حالة الموقع، أو اكتب /help لمعرفة الأوامر.');
+            }
+        }
+
+        // ===== دوال مساعدة للبوت =====
+        function sendTelegramMessage(chatId, text) {
+            const botToken = '8987189770:AAHzbmfE2_iEsceMe4kKE7fAwQ_1ugVi54o';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+            fetch(url).catch(err => console.log(err));
+        }
+
+        function addIconFromTelegram(chatId, icon, label, link) {
+            const saved = localStorage.getItem('customIcons');
+            const icons = saved ? JSON.parse(saved) : [];
+            icons.push({ link, icon, label, color1: '#1a7a3a', color2: '#0d5a2a' });
+            localStorage.setItem('customIcons', JSON.stringify(icons));
+            loadIcons();
+            renderIconList();
+            sendTelegramMessage(chatId, `✅ تمت إضافة الأيقونة: ${icon} ${label}`);
+        }
+
+        function addDeceasedFromTelegram(chatId, name) {
+            const saved = localStorage.getItem('deceasedList');
+            const list = saved ? JSON.parse(saved) : [];
+            list.push(name);
+            localStorage.setItem('deceasedList', JSON.stringify(list));
+            loadDeceased();
+            renderDeceasedList();
+            sendTelegramMessage(chatId, `✅ تمت إضافة اسم الميت: ${name}`);
+        }
+
+        function deleteIconFromTelegram(chatId, index) {
+            const saved = localStorage.getItem('customIcons');
+            const icons = saved ? JSON.parse(saved) : [];
+            if (index < 1 || index > icons.length) {
+                sendTelegramMessage(chatId, `❌ رقم الأيقونة غير صحيح. يوجد ${icons.length} أيقونات.`);
+                return;
+            }
+            const removed = icons.splice(index - 1, 1);
+            localStorage.setItem('customIcons', JSON.stringify(icons));
+            loadIcons();
+            renderIconList();
+            sendTelegramMessage(chatId, `✅ تم حذف الأيقونة: ${removed[0].icon} ${removed[0].label}`);
+        }
+
+        function deleteDeceasedFromTelegram(chatId, index) {
+            const saved = localStorage.getItem('deceasedList');
+            const list = saved ? JSON.parse(saved) : [];
+            if (index < 1 || index > list.length) {
+                sendTelegramMessage(chatId, `❌ رقم الميت غير صحيح. يوجد ${list.length} أسماء.`);
+                return;
+            }
+            const removed = list.splice(index - 1, 1);
+            localStorage.setItem('deceasedList', JSON.stringify(list));
+            loadDeceased();
+            renderDeceasedList();
+            sendTelegramMessage(chatId, `✅ تم حذف اسم الميت: ${removed[0]}`);
+        }
+
+        function toggleSectionFromTelegram(chatId, section, show) {
+            let element;
+            if (section === 'icons') {
+                element = document.getElementById('iconsBox');
+            } else {
+                element = document.querySelector('section[id="' + section + '"]');
+            }
+            if (!element) {
+                sendTelegramMessage(chatId, `❌ القسم "${section}" غير موجود.`);
+                return;
+            }
+            let hiddenSections = JSON.parse(localStorage.getItem('hiddenSections') || '{}');
+            if (show) {
+                element.style.display = 'block';
+                hiddenSections[section] = false;
+                sendTelegramMessage(chatId, `✅ تم إظهار القسم: ${section}`);
+            } else {
+                element.style.display = 'none';
+                hiddenSections[section] = true;
+                sendTelegramMessage(chatId, `✅ تم إخفاء القسم: ${section}`);
+            }
+            localStorage.setItem('hiddenSections', JSON.stringify(hiddenSections));
+        }
+
+        function showStatus(chatId) {
+            const icons = JSON.parse(localStorage.getItem('customIcons') || '[]');
+            const deceased = JSON.parse(localStorage.getItem('deceasedList') || '[]');
+            const hidden = JSON.parse(localStorage.getItem('hiddenSections') || '{}');
+            const hiddenList = Object.keys(hidden).filter(k => hidden[k]);
+
+            let msg = `📊 **حالة الموقع**\n\n`;
+            msg += `📌 عدد الأيقونات: ${icons.length}\n`;
+            msg += `🕊️ عدد الأموات: ${deceased.length}\n`;
+            msg += `🙈 الأقسام المخفية: ${hiddenList.length > 0 ? hiddenList.join(', ') : 'لا يوجد'}\n`;
+            sendTelegramMessage(chatId, msg);
+        }
+
         // ===== تحميل جميع البيانات =====
         function loadAllData() {
             loadIcons();
@@ -1230,6 +1382,7 @@
         window.onload = function() {
             const savedPassword = localStorage.getItem('adminPassword');
             if (savedPassword) ADMIN_PASSWORD = savedPassword;
+            loadAllData();
         };
     </script>
 
