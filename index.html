@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ضوء المسلم</title>
     <style>
+        /* ===== أنماط عامة ===== */
         * {
             margin: 0;
             padding: 0;
@@ -51,7 +52,7 @@
             border: 2px solid #d4af37;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
         }
         .login-container h1 {
@@ -108,8 +109,48 @@
             font-size: 0.95rem;
             display: none;
         }
+        .login-container .captcha-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            background: rgba(10, 26, 46, 0.4);
+            padding: 10px;
+            border-radius: 12px;
+        }
+        .login-container .captcha-container span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4af37;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 8px;
+            letter-spacing: 5px;
+            user-select: none;
+        }
+        .login-container .captcha-container input {
+            width: 120px;
+            margin: 0;
+            text-align: center;
+        }
+        .login-container .captcha-container .refresh-captcha {
+            background: rgba(212, 175, 55, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #d4af37;
+            transition: 0.3s;
+        }
+        .login-container .captcha-container .refresh-captcha:hover {
+            background: rgba(212, 175, 55, 0.4);
+            transform: rotate(90deg);
+        }
 
-        /* ===== الهيدر ===== */
+        /* ===== باقي أنماط الموقع (نفس الكود السابق) ===== */
         header {
             background: linear-gradient(135deg, #0a1a2e, #0d2847);
             color: #d4af37;
@@ -135,8 +176,6 @@
         .logo span {
             color: #f5d6b3;
         }
-
-        /* ===== أزرار التنقل ===== */
         nav {
             display: flex;
             flex-wrap: wrap;
@@ -172,8 +211,6 @@
             content: ' ⬅';
             font-size: 0.8rem;
         }
-
-        /* ===== أدوات الهيدر ===== */
         .header-tools {
             display: flex;
             align-items: center;
@@ -215,8 +252,6 @@
             background: rgba(212, 175, 55, 0.2);
             border-color: #d4af37;
         }
-
-        /* ===== الشريط العلوي ===== */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -234,8 +269,6 @@
         .top-bar .ramadan-countdown {
             color: #d4af37;
         }
-
-        /* ===== الأقسام ===== */
         section {
             background: rgba(13, 40, 71, 0.7);
             backdrop-filter: blur(10px);
@@ -267,8 +300,6 @@
             background: #f5d6b3;
             transform: scale(1.03);
         }
-
-        /* ===== مستطيل الأيقونات ===== */
         .icons-box {
             background: rgba(10, 26, 46, 0.8);
             backdrop-filter: blur(10px);
@@ -283,8 +314,6 @@
             gap: 15px;
             flex-wrap: wrap;
         }
-
-        /* ===== قسم الأموات ===== */
         .deceased-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -313,7 +342,7 @@
             opacity: 0.7;
         }
 
-        /* ===== أيقونة المدير ===== */
+        /* ===== أيقونة المدير (تظهر بس للمدير) ===== */
         .admin-toggle {
             position: fixed;
             bottom: 30px;
@@ -509,8 +538,6 @@
             margin-top: 10px;
             display: none;
         }
-
-        /* ===== الفوتر ===== */
         footer {
             text-align: center;
             padding: 25px 0 10px;
@@ -570,6 +597,9 @@
                 padding: 30px 20px;
                 margin: 20px;
             }
+            .login-container .captcha-container {
+                flex-wrap: wrap;
+            }
         }
         @media (max-width: 400px) {
             .deceased-grid {
@@ -579,22 +609,32 @@
     </style>
 </head>
 <body>
+
     <!-- ===== صفحة تسجيل الدخول ===== -->
     <div id="loginPage" class="login-page">
         <div class="login-container">
             <h1>☀️ ضوء المسلم</h1>
             <p class="subtitle">سجل دخولك للمتابعة</p>
-            <input type="text" id="username" placeholder="👤 اسم المستخدم" />
-            <input type="password" id="password" placeholder="🔑 كلمة السر" />
+            
+            <input type="tel" id="phoneInput" placeholder="📱 رقم التليفون" />
+            <input type="password" id="passwordInput" placeholder="🔑 كلمة السر" />
+            
+            <!-- ===== كابتشا ===== -->
+            <div class="captcha-container">
+                <span id="captchaText">A7B3</span>
+                <input type="text" id="captchaInput" placeholder="أدخل الكود" maxlength="4" />
+                <button class="refresh-captcha" onclick="generateCaptcha()">🔄</button>
+            </div>
+            
             <button class="btn-login" onclick="login()">دخول</button>
-            <div id="loginError" class="error-msg">❌ اسم المستخدم أو كلمة السر غير صحيحة</div>
+            <div id="loginError" class="error-msg">❌ رقم التليفون أو كلمة السر غير صحيحة</div>
         </div>
     </div>
 
     <!-- ===== محتوى الموقع ===== -->
     <div id="siteContent" style="display: none;">
 
-        <!-- ===== أيقونة المدير ===== -->
+        <!-- ===== أيقونة المدير (تظهر بس للمدير) ===== -->
         <button class="admin-toggle" id="adminToggle" onclick="toggleAdminPanel()" title="لوحة المدير">👤</button>
 
         <!-- ===== لوحة التحكم ===== -->
@@ -767,19 +807,47 @@
 
     <script>
         // ===== بيانات تسجيل الدخول =====
-        const VALID_USERNAME = 'admin';
-        let ADMIN_PASSWORD = '01033018680';
+        const ADMIN_PHONE = '01033018680';
+        const ADMIN_PASSWORD = 'admin123';
+        const USER_PASSWORD = '123456';
+
         let isLoggedIn = false;
+        let isAdmin = false;
         let isAdminLoggedIn = false;
+
+        // ===== كابتشا =====
+        let captchaCode = '';
+
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            captchaCode = code;
+            document.getElementById('captchaText').textContent = code;
+            document.getElementById('captchaInput').value = '';
+        }
 
         // ===== دالة تسجيل الدخول =====
         function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const phone = document.getElementById('phoneInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const captcha = document.getElementById('captchaInput').value.trim().toUpperCase();
             const errorMsg = document.getElementById('loginError');
 
-            if (username === VALID_USERNAME && password === ADMIN_PASSWORD) {
+            // التحقق من الكابتشا
+            if (captcha !== captchaCode) {
+                errorMsg.textContent = '❌ كود التحقق غير صحيح';
+                errorMsg.style.display = 'block';
+                generateCaptcha();
+                return;
+            }
+
+            // التحقق من بيانات الدخول
+            if (phone === ADMIN_PHONE && password === ADMIN_PASSWORD) {
                 isLoggedIn = true;
+                isAdmin = true;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('siteContent').style.display = 'block';
                 document.querySelector('.admin-toggle').classList.add('show');
@@ -788,7 +856,18 @@
                 updateHijriDate();
                 updateRamadanCountdown();
                 setInterval(updateClock, 1000);
+            } else if (phone.length >= 10 && password === USER_PASSWORD) {
+                isLoggedIn = true;
+                isAdmin = false;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('siteContent').style.display = 'block';
+                loadAllData();
+                updateClock();
+                updateHijriDate();
+                updateRamadanCountdown();
+                setInterval(updateClock, 1000);
             } else {
+                errorMsg.textContent = '❌ رقم التليفون أو كلمة السر غير صحيحة';
                 errorMsg.style.display = 'block';
                 setTimeout(() => {
                     errorMsg.style.display = 'none';
@@ -796,7 +875,8 @@
             }
         }
 
-        // ===== الساعة والتقويم =====
+        // ===== باقي دوال الموقع (نفس الكود السابق) =====
+        // الساعة والتقويم
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').textContent = '⏰ ' + now.toLocaleTimeString('ar-EG');
@@ -853,6 +933,7 @@
 
         // ===== لوحة المدير =====
         function toggleAdminPanel() {
+            if (!isAdmin) return;
             const panel = document.getElementById('settingsPanel');
             const btn = document.getElementById('adminToggle');
 
@@ -1174,157 +1255,6 @@
                 });
         }
 
-        // ===== استقبال أوامر البوت =====
-        function handleTelegramCommand(update) {
-            const message = update.message;
-            if (!message || !message.text) return;
-
-            const chatId = message.chat.id;
-            const text = message.text.trim();
-            const command = text.split(' ')[0];
-
-            if (chatId.toString() !== '6896130412') {
-                sendTelegramMessage(chatId, '⚠️ أنت غير مصرح لك باستخدام هذا البوت.');
-                return;
-            }
-
-            if (command === '/addicon') {
-                const parts = text.split(' ');
-                if (parts.length < 4) {
-                    sendTelegramMessage(chatId, '❌ الاستخدام: /addicon 🕌 أذكار الصباح https://example.com');
-                    return;
-                }
-                const icon = parts[1];
-                const label = parts.slice(2, -1).join(' ');
-                const link = parts[parts.length - 1];
-                addIconFromTelegram(chatId, icon, label, link);
-            } else if (command === '/adddeceased') {
-                const name = text.replace('/adddeceased', '').trim();
-                if (!name) {
-                    sendTelegramMessage(chatId, '❌ الاستخدام: /adddeceased اسم الميت');
-                    return;
-                }
-                addDeceasedFromTelegram(chatId, name);
-            } else if (command === '/deleteicon') {
-                const index = parseInt(text.replace('/deleteicon', '').trim());
-                if (isNaN(index)) {
-                    sendTelegramMessage(chatId, '❌ الاستخدام: /deleteicon رقم الأيقونة');
-                    return;
-                }
-                deleteIconFromTelegram(chatId, index);
-            } else if (command === '/deletedeceased') {
-                const index = parseInt(text.replace('/deletedeceased', '').trim());
-                if (isNaN(index)) {
-                    sendTelegramMessage(chatId, '❌ الاستخدام: /deletedeceased رقم الميت');
-                    return;
-                }
-                deleteDeceasedFromTelegram(chatId, index);
-            } else if (command === '/hide' || command === '/show') {
-                const section = text.replace(command, '').trim();
-                if (!section) {
-                    sendTelegramMessage(chatId, `❌ الاستخدام: ${command} home/about/deceased/icons/contact`);
-                    return;
-                }
-                toggleSectionFromTelegram(chatId, section, command === '/show');
-            } else if (command === '/status') {
-                showStatus(chatId);
-            } else {
-                sendTelegramMessage(chatId, '🤖 مرحباً! استخدم /status لمعرفة حالة الموقع، أو اكتب /help لمعرفة الأوامر.');
-            }
-        }
-
-        // ===== دوال مساعدة للبوت =====
-        function sendTelegramMessage(chatId, text) {
-            const botToken = '8987189770:AAHzbmfE2_iEsceMe4kKE7fAwQ_1ugVi54o';
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-            fetch(url).catch(err => console.log(err));
-        }
-
-        function addIconFromTelegram(chatId, icon, label, link) {
-            const saved = localStorage.getItem('customIcons');
-            const icons = saved ? JSON.parse(saved) : [];
-            icons.push({ link, icon, label, color1: '#1a7a3a', color2: '#0d5a2a' });
-            localStorage.setItem('customIcons', JSON.stringify(icons));
-            loadIcons();
-            renderIconList();
-            sendTelegramMessage(chatId, `✅ تمت إضافة الأيقونة: ${icon} ${label}`);
-        }
-
-        function addDeceasedFromTelegram(chatId, name) {
-            const saved = localStorage.getItem('deceasedList');
-            const list = saved ? JSON.parse(saved) : [];
-            list.push(name);
-            localStorage.setItem('deceasedList', JSON.stringify(list));
-            loadDeceased();
-            renderDeceasedList();
-            sendTelegramMessage(chatId, `✅ تمت إضافة اسم الميت: ${name}`);
-        }
-
-        function deleteIconFromTelegram(chatId, index) {
-            const saved = localStorage.getItem('customIcons');
-            const icons = saved ? JSON.parse(saved) : [];
-            if (index < 1 || index > icons.length) {
-                sendTelegramMessage(chatId, `❌ رقم الأيقونة غير صحيح. يوجد ${icons.length} أيقونات.`);
-                return;
-            }
-            const removed = icons.splice(index - 1, 1);
-            localStorage.setItem('customIcons', JSON.stringify(icons));
-            loadIcons();
-            renderIconList();
-            sendTelegramMessage(chatId, `✅ تم حذف الأيقونة: ${removed[0].icon} ${removed[0].label}`);
-        }
-
-        function deleteDeceasedFromTelegram(chatId, index) {
-            const saved = localStorage.getItem('deceasedList');
-            const list = saved ? JSON.parse(saved) : [];
-            if (index < 1 || index > list.length) {
-                sendTelegramMessage(chatId, `❌ رقم الميت غير صحيح. يوجد ${list.length} أسماء.`);
-                return;
-            }
-            const removed = list.splice(index - 1, 1);
-            localStorage.setItem('deceasedList', JSON.stringify(list));
-            loadDeceased();
-            renderDeceasedList();
-            sendTelegramMessage(chatId, `✅ تم حذف اسم الميت: ${removed[0]}`);
-        }
-
-        function toggleSectionFromTelegram(chatId, section, show) {
-            let element;
-            if (section === 'icons') {
-                element = document.getElementById('iconsBox');
-            } else {
-                element = document.querySelector('section[id="' + section + '"]');
-            }
-            if (!element) {
-                sendTelegramMessage(chatId, `❌ القسم "${section}" غير موجود.`);
-                return;
-            }
-            let hiddenSections = JSON.parse(localStorage.getItem('hiddenSections') || '{}');
-            if (show) {
-                element.style.display = 'block';
-                hiddenSections[section] = false;
-                sendTelegramMessage(chatId, `✅ تم إظهار القسم: ${section}`);
-            } else {
-                element.style.display = 'none';
-                hiddenSections[section] = true;
-                sendTelegramMessage(chatId, `✅ تم إخفاء القسم: ${section}`);
-            }
-            localStorage.setItem('hiddenSections', JSON.stringify(hiddenSections));
-        }
-
-        function showStatus(chatId) {
-            const icons = JSON.parse(localStorage.getItem('customIcons') || '[]');
-            const deceased = JSON.parse(localStorage.getItem('deceasedList') || '[]');
-            const hidden = JSON.parse(localStorage.getItem('hiddenSections') || '{}');
-            const hiddenList = Object.keys(hidden).filter(k => hidden[k]);
-
-            let msg = `📊 **حالة الموقع**\n\n`;
-            msg += `📌 عدد الأيقونات: ${icons.length}\n`;
-            msg += `🕊️ عدد الأموات: ${deceased.length}\n`;
-            msg += `🙈 الأقسام المخفية: ${hiddenList.length > 0 ? hiddenList.join(', ') : 'لا يوجد'}\n`;
-            sendTelegramMessage(chatId, msg);
-        }
-
         // ===== تحميل جميع البيانات =====
         function loadAllData() {
             loadIcons();
@@ -1371,18 +1301,21 @@
         });
 
         // ===== تفعيل الدخول بضغط Enter =====
-        document.getElementById('password').addEventListener('keypress', function(e) {
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
-        document.getElementById('username').addEventListener('keypress', function(e) {
+        document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
+        document.getElementById('captchaInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
 
-        // ===== تحميل البيانات عند فتح الصفحة =====
+        // ===== تحميل الكابتشا عند فتح الصفحة =====
         window.onload = function() {
+            generateCaptcha();
             const savedPassword = localStorage.getItem('adminPassword');
             if (savedPassword) ADMIN_PASSWORD = savedPassword;
-            loadAllData();
         };
     </script>
 
