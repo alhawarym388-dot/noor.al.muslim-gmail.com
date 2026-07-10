@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -24,13 +23,6 @@
         body.dark-mode {
             background: radial-gradient(ellipse at center, #0a0f1a 0%, #050a12 100%);
         }
-        body.login-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: radial-gradient(ellipse at center, #0d2847 0%, #071322 100%);
-        }
         .container {
             max-width: 1000px;
             margin: auto;
@@ -44,6 +36,13 @@
         }
 
         /* ===== صفحة تسجيل الدخول ===== */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #0d2847 0%, #071322 100%);
+        }
         .login-container {
             background: rgba(13, 40, 71, 0.8);
             backdrop-filter: blur(10px);
@@ -98,13 +97,25 @@
             transition: 0.3s;
             font-weight: bold;
             width: 100%;
+            margin-top: 10px;
         }
         .login-container .btn-login:hover {
             background: #f5d6b3;
             transform: scale(1.02);
         }
+        .login-container .btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
         .login-container .error-msg {
             color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        .login-container .success-msg {
+            color: #51cf66;
             margin-top: 10px;
             font-size: 0.95rem;
             display: none;
@@ -118,6 +129,7 @@
             background: rgba(10, 26, 46, 0.4);
             padding: 10px;
             border-radius: 12px;
+            flex-wrap: wrap;
         }
         .login-container .captcha-container span {
             font-size: 1.8rem;
@@ -150,7 +162,7 @@
             transform: rotate(90deg);
         }
 
-        /* ===== باقي أنماط الموقع (نفس الكود السابق) ===== */
+        /* ===== باقي أنماط الموقع ===== */
         header {
             background: linear-gradient(135deg, #0a1a2e, #0d2847);
             color: #d4af37;
@@ -342,7 +354,6 @@
             opacity: 0.7;
         }
 
-        /* ===== أيقونة المدير (تظهر بس للمدير) ===== */
         .admin-toggle {
             position: fixed;
             bottom: 30px;
@@ -373,7 +384,6 @@
             display: block;
         }
 
-        /* ===== لوحة التحكم ===== */
         .settings-panel {
             position: fixed;
             bottom: 100px;
@@ -394,14 +404,8 @@
             animation: slideUp 0.3s ease;
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .settings-panel h3 {
             color: #d4af37;
@@ -547,64 +551,23 @@
             margin-top: 20px;
         }
 
-        /* ===== التوافق مع الجوال ===== */
         @media (max-width: 650px) {
-            header .container {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .nav-btn {
-                font-size: 0.8rem;
-                padding: 6px 10px;
-            }
-            .logo {
-                font-size: 1.4rem;
-            }
-            h2 {
-                font-size: 1.7rem;
-            }
-            section {
-                padding: 25px 18px;
-            }
-            .settings-panel {
-                right: 10px;
-                width: calc(100% - 20px);
-                bottom: 90px;
-            }
-            .admin-toggle {
-                right: 15px;
-                bottom: 20px;
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            .top-bar {
-                flex-direction: column;
-                gap: 8px;
-                text-align: center;
-            }
-            .deceased-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .header-tools {
-                width: 100%;
-                justify-content: center;
-            }
-            .header-tools input[type="text"] {
-                width: 130px;
-            }
-            .login-container {
-                padding: 30px 20px;
-                margin: 20px;
-            }
-            .login-container .captcha-container {
-                flex-wrap: wrap;
-            }
+            header .container { flex-direction: column; gap: 12px; }
+            .nav-btn { font-size: 0.8rem; padding: 6px 10px; }
+            .logo { font-size: 1.4rem; }
+            h2 { font-size: 1.7rem; }
+            section { padding: 25px 18px; }
+            .settings-panel { right: 10px; width: calc(100% - 20px); bottom: 90px; }
+            .admin-toggle { right: 15px; bottom: 20px; width: 50px; height: 50px; font-size: 1.5rem; }
+            .top-bar { flex-direction: column; gap: 8px; text-align: center; }
+            .deceased-grid { grid-template-columns: 1fr 1fr; }
+            .header-tools { width: 100%; justify-content: center; }
+            .header-tools input[type="text"] { width: 130px; }
+            .login-container { padding: 30px 20px; margin: 20px; }
+            .login-container .captcha-container { flex-wrap: wrap; }
         }
         @media (max-width: 400px) {
-            .deceased-grid {
-                grid-template-columns: 1fr;
-            }
+            .deceased-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -626,7 +589,7 @@
                 <button class="refresh-captcha" onclick="generateCaptcha()">🔄</button>
             </div>
             
-            <button class="btn-login" onclick="login()">دخول</button>
+            <button class="btn-login" id="loginBtn" onclick="login()">دخول</button>
             <div id="loginError" class="error-msg">❌ رقم التليفون أو كلمة السر غير صحيحة</div>
         </div>
     </div>
@@ -634,13 +597,10 @@
     <!-- ===== محتوى الموقع ===== -->
     <div id="siteContent" style="display: none;">
 
-        <!-- ===== أيقونة المدير (تظهر بس للمدير) ===== -->
         <button class="admin-toggle" id="adminToggle" onclick="toggleAdminPanel()" title="لوحة المدير">👤</button>
 
-        <!-- ===== لوحة التحكم ===== -->
         <div class="settings-panel" id="settingsPanel">
             <h3>👤 لوحة تحكم المدير</h3>
-
             <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.1);">
                 <h4 style="color:#d4af37; margin-bottom:10px;">📋 إظهار/إخفاء الأقسام</h4>
                 <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
@@ -651,7 +611,6 @@
                     <button class="btn-settings" style="width:auto; padding:6px 15px; background:rgba(212,175,55,0.15);" onclick="toggleSection('contact')">📩 اتصل بنا</button>
                 </div>
             </div>
-
             <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.1);">
                 <h4 style="color:#d4af37; margin-bottom:10px;">➕ إدارة الأيقونات</h4>
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
@@ -663,7 +622,6 @@
                 <div id="iconList" style="max-height:150px; overflow-y:auto;"></div>
                 <button onclick="clearAllIcons()" class="btn-settings btn-danger" style="margin-top:10px;">🗑️ مسح جميع الأيقونات</button>
             </div>
-
             <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.1);">
                 <h4 style="color:#d4af37; margin-bottom:10px;">🕊️ إدارة الأموات</h4>
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
@@ -673,7 +631,6 @@
                 <div id="deceasedList" style="max-height:150px; overflow-y:auto;"></div>
                 <button onclick="clearAllDeceased()" class="btn-settings btn-danger" style="margin-top:10px;">🗑️ مسح جميع الأموات</button>
             </div>
-
             <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.1);">
                 <h4 style="color:#d4af37; margin-bottom:10px;">🎨 الإعدادات العامة</h4>
                 <label>🌙 الوضع الليلي</label>
@@ -689,7 +646,6 @@
                 <input type="range" id="fontSize" min="14" max="24" value="16" oninput="changeFontSize()" />
                 <span id="fontSizeLabel" style="color:#d4af37;">16px</span>
             </div>
-
             <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.1);">
                 <h4 style="color:#d4af37; margin-bottom:10px;">🔑 تغيير كلمة السر</h4>
                 <label>كلمة السر الحالية</label>
@@ -701,15 +657,12 @@
                 <button onclick="changePassword()" class="btn-settings">تغيير كلمة السر</button>
                 <div id="passwordMessage" style="margin-top:5px;"></div>
             </div>
-
             <div id="adminSuccess" class="admin-success">✅ تم التحديث بنجاح</div>
             <button class="close-settings" onclick="closeAllPanels()">🔒 إغلاق لوحة التحكم</button>
         </div>
 
-        <!-- ===== زر العودة للأعلى ===== -->
         <button class="back-to-top" id="backToTop" onclick="scrollToTop()" style="position:fixed; bottom:100px; left:30px; background:#d4af37; color:#0a1a2e; border:none; border-radius:50%; width:50px; height:50px; font-size:1.5rem; cursor:pointer; display:none; z-index:200;">⬆</button>
 
-        <!-- ===== الهيدر ===== -->
         <header>
             <div class="container">
                 <div class="logo">☀️ <span>ضوء</span> المسلم</div>
@@ -727,7 +680,6 @@
         </header>
 
         <div class="container">
-
             <div class="top-bar">
                 <div class="time" id="clock">⏰ 00:00:00</div>
                 <div class="date" id="hijriDate">📅 التقويم الهجري</div>
@@ -808,8 +760,8 @@
     <script>
         // ===== بيانات تسجيل الدخول =====
         const ADMIN_PHONE = '01033018680';
-        const ADMIN_PASSWORD = 'admin123';
         const USER_PASSWORD = '123456';
+        const ADMIN_PASSWORD = 'admin123';
 
         let isLoggedIn = false;
         let isAdmin = false;
@@ -845,7 +797,8 @@
             }
 
             // التحقق من بيانات الدخول
-            if (phone === ADMIN_PHONE && password === ADMIN_PASSWORD) {
+            if (phone === ADMIN_PHONE) {
+                // مدير
                 isLoggedIn = true;
                 isAdmin = true;
                 document.getElementById('loginPage').style.display = 'none';
@@ -856,27 +809,31 @@
                 updateHijriDate();
                 updateRamadanCountdown();
                 setInterval(updateClock, 1000);
-            } else if (phone.length >= 10 && password === USER_PASSWORD) {
-                isLoggedIn = true;
-                isAdmin = false;
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('siteContent').style.display = 'block';
-                loadAllData();
-                updateClock();
-                updateHijriDate();
-                updateRamadanCountdown();
-                setInterval(updateClock, 1000);
             } else {
-                errorMsg.textContent = '❌ رقم التليفون أو كلمة السر غير صحيحة';
-                errorMsg.style.display = 'block';
-                setTimeout(() => {
-                    errorMsg.style.display = 'none';
-                }, 3000);
+                // زائر عادي
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.phone === phone && u.password === password);
+                if (user) {
+                    isLoggedIn = true;
+                    isAdmin = false;
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('siteContent').style.display = 'block';
+                    loadAllData();
+                    updateClock();
+                    updateHijriDate();
+                    updateRamadanCountdown();
+                    setInterval(updateClock, 1000);
+                } else {
+                    errorMsg.textContent = '❌ رقم التليفون أو كلمة السر غير صحيحة';
+                    errorMsg.style.display = 'block';
+                    setTimeout(() => {
+                        errorMsg.style.display = 'none';
+                    }, 3000);
+                }
             }
         }
 
-        // ===== باقي دوال الموقع (نفس الكود السابق) =====
-        // الساعة والتقويم
+        // ===== دوال الموقع =====
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').textContent = '⏰ ' + now.toLocaleTimeString('ar-EG');
@@ -900,7 +857,6 @@
             document.getElementById('ramadanCountdown').textContent = '🌙 رمضان: ' + diff + ' يوم';
         }
 
-        // ===== بحث الموقع =====
         function searchSite() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const sections = document.querySelectorAll('section');
@@ -931,7 +887,6 @@
             }
         }
 
-        // ===== لوحة المدير =====
         function toggleAdminPanel() {
             if (!isAdmin) return;
             const panel = document.getElementById('settingsPanel');
@@ -961,7 +916,6 @@
             isAdminLoggedIn = false;
         }
 
-        // ===== الإعدادات العامة =====
         function changeBgColor() {
             if (!isAdminLoggedIn) return;
             document.body.style.background = document.getElementById('bgColor').value;
@@ -985,7 +939,80 @@
             document.body.classList.toggle('dark-mode', document.getElementById('darkMode').value === 'on');
         }
 
-        // ===== إدارة الأيقونات =====
+        // ===== تحميل البيانات من Google Sheets =====
+        const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQO-dp0X1URZxDmuoGO4gtwd5maN56ifLVEDX3tVbmbkHEVwkOsR8G1OAREuMlh1OXe-uOHC1qdi5vh/pub?gid=0&single=true&output=csv';
+
+        function loadFromGoogleSheets() {
+            fetch(GOOGLE_SHEETS_URL)
+                .then(response => response.text())
+                .then(csv => {
+                    const lines = csv.split('\n').filter(line => line.trim() !== '');
+                    if (lines.length < 2) return; // No data
+                    
+                    const icons = [];
+                    const deceased = [];
+                    
+                    // Skip header (first line)
+                    for (let i = 1; i < lines.length; i++) {
+                        const cols = lines[i].split(',');
+                        if (cols.length < 6) continue;
+                        
+                        const type = cols[0].trim();
+                        const icon = cols[1].trim();
+                        const label = cols[2].trim();
+                        const link = cols[3].trim();
+                        const color1 = cols[4].trim() || '#1a7a3a';
+                        const color2 = cols[5].trim() || '#0d5a2a';
+                        
+                        if (type === 'أيقونة' && label && link) {
+                            icons.push({ icon, label, link, color1, color2 });
+                        } else if (type === 'ميت' && label) {
+                            deceased.push(label);
+                        }
+                    }
+                    
+                    // Update icons
+                    const iconsContainer = document.getElementById('iconsContainer');
+                    if (icons.length > 0) {
+                        iconsContainer.innerHTML = icons.map(icon => `
+                            <a href="${icon.link}" target="_blank" 
+                               style="background: linear-gradient(135deg, ${icon.color1}, ${icon.color2}); 
+                                      color: #fff; 
+                                      padding: 15px 25px; 
+                                      border-radius: 14px; 
+                                      font-size: 1.3rem; 
+                                      text-decoration: none; 
+                                      transition: 0.3s; 
+                                      display: inline-flex; 
+                                      align-items: center; 
+                                      gap: 10px; 
+                                      border: 3px solid #d4af37; 
+                                      box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+                                      font-weight: bold;
+                                      width: fit-content;">
+                                ${icon.icon} <span style="font-size:1rem;">${icon.label}</span>
+                            </a>
+                        `).join('');
+                    }
+                    
+                    // Update deceased
+                    const deceasedContainer = document.getElementById('deceasedContainer');
+                    if (deceased.length > 0) {
+                        deceasedContainer.innerHTML = deceased.map(name => `
+                            <div class="deceased-card">
+                                <span style="font-size:2rem;">🌹</span>
+                                <div class="name">${name}</div>
+                                <div class="dua">رحمه الله</div>
+                            </div>
+                        `).join('');
+                    }
+                })
+                .catch(error => {
+                    console.log('Error loading from Google Sheets:', error);
+                });
+        }
+
+        // ===== إدارة الأيقونات (محلياً) =====
         function loadIcons() {
             const saved = localStorage.getItem('customIcons');
             const container = document.getElementById('iconsContainer');
@@ -1147,7 +1174,6 @@
             showSuccess('✅ تم مسح جميع الأسماء');
         }
 
-        // ===== تغيير كلمة السر =====
         function changePassword() {
             if (!isAdminLoggedIn) return;
             const current = document.getElementById('currentPassword').value;
@@ -1181,7 +1207,6 @@
             showSuccess('✅ تم تغيير كلمة السر بنجاح');
         }
 
-        // ===== التحكم في الأقسام =====
         function toggleSection(sectionId) {
             if (!isAdminLoggedIn) return;
             let element;
@@ -1221,7 +1246,6 @@
             }
         }
 
-        // ===== إرسال رسالة لبوت تلجرام =====
         function sendToTelegram() {
             const name = document.getElementById('userName').value;
             const email = document.getElementById('userEmail').value;
@@ -1255,16 +1279,16 @@
                 });
         }
 
-        // ===== تحميل جميع البيانات =====
         function loadAllData() {
             loadIcons();
             loadDeceased();
             loadSectionStates();
             renderIconList();
             renderDeceasedList();
+            // تحميل البيانات من Google Sheets
+            loadFromGoogleSheets();
         }
 
-        // ===== رسائل النجاح =====
         function showSuccess(message) {
             const el = document.getElementById('adminSuccess');
             el.textContent = message;
@@ -1272,7 +1296,6 @@
             setTimeout(() => { el.style.display = 'none'; }, 3000);
         }
 
-        // ===== المشاركة =====
         function shareWhatsApp() {
             window.open('https://wa.me/?text=' + encodeURIComponent('☀️ ضوء المسلم - منصة إسلامية متكاملة'));
         }
@@ -1285,7 +1308,6 @@
             window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('☀️ ضوء المسلم - منصة إسلامية متكاملة'));
         }
 
-        // ===== زر العودة للأعلى =====
         window.addEventListener('scroll', function() {
             const btn = document.getElementById('backToTop');
             btn.style.display = window.scrollY > 300 ? 'block' : 'none';
@@ -1295,12 +1317,10 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ===== تفعيل البحث =====
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') searchSite();
         });
 
-        // ===== تفعيل الدخول بضغط Enter =====
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
@@ -1311,13 +1331,12 @@
             if (e.key === 'Enter') login();
         });
 
-        // ===== تحميل الكابتشا عند فتح الصفحة =====
         window.onload = function() {
             generateCaptcha();
             const savedPassword = localStorage.getItem('adminPassword');
             if (savedPassword) ADMIN_PASSWORD = savedPassword;
+            loadAllData();
         };
     </script>
-
 </body>
 </html>
